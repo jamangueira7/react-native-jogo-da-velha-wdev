@@ -9,6 +9,19 @@ export default function App() {
   const [jogadasRestantes, setJogadasRestantes] = useState(0);
   const [ganhador, setGanhador] = useState('');
 
+  function iniciarJogo(jogador) {
+    setJogadorAtual(jogador);
+
+    setJogadasRestantes(9);
+    setTabuleiro([
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', ''],
+    ]);
+
+    setTela('jogo');
+  }
+
   switch (tela) {
     case 'menu':
       return getTelaMenu();
@@ -26,11 +39,17 @@ export default function App() {
           <Text style={styles.subtitulo}>Selecione o primeiro jogador</Text>
 
           <View style={styles.inlineItems}>
-            <TouchableOpacity style={styles.boxJogador}>
+            <TouchableOpacity
+                style={styles.boxJogador}
+                onPress={() => iniciarJogo('X')}
+            >
               <Text style={styles.jogadorX}>X</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.boxJogador}>
+            <TouchableOpacity
+                style={styles.boxJogador}
+                onPress={() => iniciarJogo('O')}
+            >
               <Text style={styles.jogadorO}>O</Text>
             </TouchableOpacity>
           </View>
@@ -42,7 +61,33 @@ export default function App() {
     return (
         <View style={styles.container}>
           <StatusBar style="auto" />
-          <Text>Jogo</Text>
+          <Text style={styles.titulo}>Jogo da velha</Text>
+          {
+            tabuleiro.map((linha, numeroLinha) => {
+              return(
+                  <View key={numeroLinha} style={styles.inlineItems}>
+                    {
+                      linha.map((coluna, numeroColuna) => {
+                        return(
+                          <TouchableOpacity
+                              key={numeroColuna}
+                              style={styles.boxJogador}
+                          >
+                            <Text style={coluna === 'X' ? styles.jogadorX : styles.jogadorO }>{coluna}</Text>
+                          </TouchableOpacity>
+                        )
+                      })
+                    }
+                  </View>
+              )
+            })
+          }
+          <TouchableOpacity
+              style={styles.botaoMenu}
+              onPress={() => setTela('menu')}
+          >
+            <Text style={styles.textBotaoMenu}>Volta ao menu</Text>
+          </TouchableOpacity>
         </View>
     );
   }
@@ -99,5 +144,13 @@ const styles = StyleSheet.create({
   jogadorO: {
     fontSize: 40,
     color: '#da3f3f',
+  },
+
+  botaoMenu: {
+    marginTop: 20,
+  },
+
+  textBotaoMenu: {
+    color: '#4e6fe4',
   },
 });
