@@ -31,6 +31,13 @@ export default function App() {
       return getTelaGanhador();
   }
 
+  function jogar(linha, coluna) {
+    tabuleiro[linha][coluna] = jogadorAtual;
+    setTabuleiro([...tabuleiro]);
+
+    setJogadorAtual(jogadorAtual === 'X' ? 'O' : 'X');
+  }
+
   function getTelaMenu() {
     return (
         <View style={styles.container}>
@@ -72,6 +79,8 @@ export default function App() {
                           <TouchableOpacity
                               key={numeroColuna}
                               style={styles.boxJogador}
+                              onPress={() => jogar(numeroLinha, numeroColuna)}
+                              disabled={coluna !== ''}
                           >
                             <Text style={coluna === 'X' ? styles.jogadorX : styles.jogadorO }>{coluna}</Text>
                           </TouchableOpacity>
