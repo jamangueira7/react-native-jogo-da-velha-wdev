@@ -36,6 +36,55 @@ export default function App() {
     setTabuleiro([...tabuleiro]);
 
     setJogadorAtual(jogadorAtual === 'X' ? 'O' : 'X');
+
+    verificarGanhador(tabuleiro, linha, coluna);
+  }
+
+  function verificarGanhador(tabuleiro, linha, coluna) {
+    //LINHAS
+    if(tabuleiro[linha][0] !== '' &&
+        tabuleiro[linha][0] === tabuleiro[linha][1] &&
+        tabuleiro[linha][1] === tabuleiro[linha][2]
+    ) {
+      return finalizarJogo(tabuleiro[linha][0]);
+    }
+
+    //COLUNAS
+    if(tabuleiro[0][coluna] !== '' &&
+        tabuleiro[0][coluna] === tabuleiro[1][coluna] &&
+        tabuleiro[1][coluna] === tabuleiro[2][coluna]
+    ) {
+      return finalizarJogo(tabuleiro[0][coluna]);
+    }
+
+    //DIAGONAL 1
+    if(tabuleiro[0][0] !== '' &&
+        tabuleiro[0][0] === tabuleiro[1][1] &&
+        tabuleiro[1][1] === tabuleiro[2][2]
+    ) {
+      return finalizarJogo(tabuleiro[0][0]);
+    }
+
+    //DIAGONAL 2
+    if(tabuleiro[0][2] !== '' &&
+        tabuleiro[0][2] === tabuleiro[1][1] &&
+        tabuleiro[1][1] === tabuleiro[2][0]
+    ) {
+      return finalizarJogo(tabuleiro[0][2]);
+    }
+
+    //EMPATE
+    if(jogadasRestantes - 1 === 0) {
+      return finalizarJogo('');
+    }
+
+    //JOGO CONTINUA
+    setJogadasRestantes(jogadasRestantes - 1);
+  }
+
+  function finalizarJogo(jogador) {
+    setGanhador(jogador);
+    setTela('ganhador');
   }
 
   function getTelaMenu() {
@@ -105,7 +154,30 @@ export default function App() {
     return (
         <View style={styles.container}>
           <StatusBar style="auto" />
-          <Text>Ganhador</Text>
+          <Text style={styles.titulo}>Jogo da velha</Text>
+          <Text style={styles.subtitulo}>Resultado final</Text>
+
+          {
+            ganhador === '' &&
+                <Text style={styles.ganhador}>Nenhum ganhador</Text>
+          }
+
+          {
+            ganhador !== '' &&
+                <>
+                  <Text style={styles.ganhador}>Ganhador</Text>
+                  <View style={styles.boxJogador}>
+                    <Text style={ganhador === 'X' ? styles.jogadorX : styles.jogadorO }>{ganhador}</Text>
+                  </View>
+                </>
+          }
+
+          <TouchableOpacity
+              style={styles.botaoMenu}
+              onPress={() => setTela('menu')}
+          >
+            <Text style={styles.textBotaoMenu}>Volta ao menu</Text>
+          </TouchableOpacity>
         </View>
     );
   }
@@ -161,5 +233,11 @@ const styles = StyleSheet.create({
 
   textBotaoMenu: {
     color: '#4e6fe4',
+  },
+
+  ganhador: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#333',
   },
 });
